@@ -1,10 +1,14 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import './Dashboard.css';
 
 function Dashboard(props) {
-  return (
-    <div>
 
-      Hell from dashboard
+
+
+  return (
+    <div className="dashboard"> 
+
+      Hello from dashboard
       
     </div>
   );
