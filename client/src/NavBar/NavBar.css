@@ -1,4 +1,9 @@
 .navbar {
-  background-color: blue;
-  height: 3rem;
+  background-color: #A0DDE3;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.3rem;
 }

@@ -6,7 +6,7 @@ function App() {
   return (
     <div>
       <NavBar />
-      Hello from MaskMeter
+    
 
       <Dashboard />
     </div>

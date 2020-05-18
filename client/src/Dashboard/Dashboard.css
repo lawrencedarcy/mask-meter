@@ -1,3 +1,73 @@
 .dashboard {
   width: 80%;
+  margin: 2rem auto;
+  text-align: center;
+  
 } 
+
+.postcode-form {
+  padding: 1.5rem;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.postcode-btn {
+  border-radius: 0%;
+  outline: none;
+  text-transform: uppercase;
+  height: 2rem;
+  margin: .5rem auto;
+  width: 7rem;
+  background-color: #a0e3a6;
+  border: none;
+  font-size: 1rem;
+  
+}
+
+.postcode-input {
+  height: 1.7rem;
+
+  margin: .5rem;
+  outline: none;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+}
+
+.postcode-input:focus{
+  background-color: #A0DDE3;
+
+}
+
+.mask-meter {
+
+  border: 1px solid grey;
+  height: 60vh;
+}
+
+.mask-meter-score {
+  border: 1px solid grey;
+  height: 50%;
+  margin: auto;
+  width: 60%;
+  font-size: 7rem;
+}
+
+.mask-meter-sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mask-meter-corona {
+  border: 1px solid grey;
+  width: 40%;
+  height: 20vh;
+}
+
+.mask-meter-pollution {
+  border: 1px solid grey;
+  width: 40%;
+  height: 20vh;
+}

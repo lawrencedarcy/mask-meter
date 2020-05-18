@@ -4,7 +4,7 @@ import './NavBar.css';
 function NavBar(props) {
   return (
     <div className="navbar">
-      MaskMeter nav
+      MaskMeter 😷
     </div>
   );
 }
