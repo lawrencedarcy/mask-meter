@@ -6,11 +6,19 @@
   
   
 } 
+body {
+background-color:   rgba(227, 249, 253, 0.562);
+}
+
+
 
 .intro-text {
+  width: 80%;
+  margin: auto;
   padding: 0rem;
-  padding-bottom: 1rem;
-  font-weight: bold;
+ 
+  font-weight: 500;
+  line-height: 1.4rem;
 }
 
 .postcode-form {
@@ -18,7 +26,7 @@
   display: flex;
   flex-direction: column;
   margin: .5rem;
-  background-color: rgba(227, 249, 253, 0.733);
+ 
 
 }
 
@@ -47,7 +55,9 @@
 
 .gauge-container {
   display: flex;
-  margin: 1rem;
+  margin: 1rem 0;
+  border: .05rem solid #A0DDE3;
+  padding: 1.5rem;
 }
 
 .postcode-btn:hover {
@@ -98,18 +108,14 @@
 }
 
 
-.mask-meter-corona {
+.mask-meter-corona, .mask-meter-pollution {
 
   width: 25%;
   height: 20vh;
   margin: auto;
+  padding: 0 1rem;
 }
 
-.mask-meter-pollution {
-  margin: auto;
-  width: 25%;
-  height: 20vh;
-}
 
 .slider-scale {
   font-weight: bold;
@@ -128,15 +134,22 @@
 }
 
 .level-text {
-  font-size: 2rem;
+  font-size: calc(1.5rem);
   text-transform: uppercase;
   padding: 1rem;
+  text-align: center;
 }
 
 .level-container {
   padding: 1rem;
+  margin-left: 0 .5rem;
 }
 
-p {
+.p {
   font-size: .8rem;
+}
+
+.mask {
+  width: 35px;
+  margin: 10px;
 }

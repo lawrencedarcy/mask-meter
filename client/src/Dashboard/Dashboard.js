@@ -4,13 +4,7 @@ import axios from 'axios';
 import Slider from 'react-slider-simple';
 import Gauge from 'react-radial-gauge';
 
-
-
 const database = require('../database.js');
-
-
-
-
 
 function Dashboard(props) {
   const [currentLocation, setCurrentLocation] = useState();
@@ -58,13 +52,11 @@ function Dashboard(props) {
   const getCoronaData = district => {
     console.log('district is', district);
 
-
-    console.log(database.database.filter(entry => entry.area == district))
+    console.log(database.database.filter(entry => entry.area == district));
 
     const area = database.database.filter(entry => entry.area == district);
-    setCoronaArea(area[0].area)
-    setCoronaRate((area[0].number/500*10).toFixed(2));
-
+    setCoronaArea(area[0].area);
+    setCoronaRate(((area[0].number / 500) * 10).toFixed(2));
   };
 
   const getPollutionData = (lat, lon) => {
@@ -75,7 +67,7 @@ function Dashboard(props) {
       )
       .then(function(response) {
         setPollutionScore(response.data[0].epa_aqi.value / 10 / 2);
-        console.log('pol score', pollutionScore)
+        console.log('pol score', pollutionScore);
       })
       .catch(function(error) {
         console.log(error);
@@ -106,7 +98,6 @@ function Dashboard(props) {
       });
   };
 
-  
   const handleChange = event => {
     setPostcode(event.target.value);
   };
@@ -131,100 +122,122 @@ function Dashboard(props) {
     if (num > 0) return 'low';
   };
 
-  const sliderHandler = (num) => {
+  const sliderHandler = num => {
     setSliderValue(num);
-  }
-  const sliderDoneHandler = (percent) => {
+  };
+  const sliderDoneHandler = percent => {
     console.log(`I'm done. here's the value: ${percent}`);
   };
 
-
   const calcScore = () => {
-
+    if (pollutionScore == undefined) return 0;
     let pol = pollutionScore;
     let cor = Number(coronaRate);
 
     if (sliderValue <= 50) {
-      pol = pol * ((sliderValue*2)/100);
-      cor = cor * ((100 - sliderValue)/100)*2;
+      pol = pol * ((sliderValue * 2) / 100);
+      cor = cor * ((100 - sliderValue) / 100) * 2;
     }
     if (sliderValue > 50) {
-      cor = (cor * ((100-sliderValue)/100))*2;
-      pol = pol * ((sliderValue)/100)*2;
+      cor = cor * ((100 - sliderValue) / 100) * 2;
+      pol = pol * (sliderValue / 100) * 2;
     }
 
-    return (((cor+pol)/2) * 10).toFixed(0);
-  }
+    return (((cor + pol) / 2) * 10).toFixed(0);
+  };
 
   return (
     <div className='dashboard'>
       <form onSubmit={handleSubmit} className='postcode-form'>
-      <div className='intro-text'> MaskMeter uses current COVID-19 and air quality data to help you decide whether to wear a mask today.</div>
+        <div className='intro-text'>
+          {' '}
+          MaskMeter uses current COVID-19 and air quality data to help you
+          decide whether to wear a mask.
+        </div>
         <label>
           <div className='gauge-container'>
-          <div className='mask-meter-corona level-container'>
-            {' '}
-            {coronaRate && (
-              <p>
-                In {coronaArea}, the relative Corona rate is currently{' '}
-                <div className='level-text'>{coronaLevel(coronaRate)}</div>
-              </p>
-            )}{' '}
+            <div className='mask-meter-corona level-container'>
+              {' '}
+              {coronaRate && (
+                <div>
+                <img
+                className='mask'
+                alt='corona'
+                src='https://uploads.guim.co.uk/2020/05/19/bacteria.png'
+              ></img>
+                <div className='p'>
+                  
+                  In {coronaArea}, the relative Corona rate is currently
+                  <div className='level-text'>{coronaLevel(coronaRate)}</div>
+                </div>
+                </div>
+              )}{' '}
+            </div>
+            <Gauge
+              className='gauge'
+              currentValue={calcScore()}
+              dialColor='#a0e3a6'
+              progressColor='#4e8d52'
+              tickColor='#4e8d52'
+              needleColor='#4e8d52'
+              needleBaseColor='#4e8d52'
+            />
+            <div className='mask-meter-pollution level-container'>
+              {' '}
+              {pollutionScore && (
+                <div> 
+
+                <img
+                className='mask'
+                alt='pollution'
+                src='https://uploads.guim.co.uk/2020/05/19/acid-rain.png'
+                ></img>
+                <div className='p'>
+                  
+                  The pollution level in your area is currently{' '}
+                  <div className='level-text'>
+                    {pollutionLevel(pollutionScore)}
+                  </div>
+                </div>
+                </div>
+              )}
+            </div>
           </div>
-        <Gauge 
-        className='gauge'
-        currentValue={calcScore()}
-        dialColor='#a0e3a6'
-        progressColor='#4e8d52'
-        tickColor='#4e8d52'
-        needleColor='#4e8d52'
-        needleBaseColor='#4e8d52'
-        />
-         <div className='mask-meter-pollution level-container'>
-            {' '}
-            {pollutionScore && (
-              <p>
-              The pollution level in {coronaArea} is currently{' '}
-              <div className='level-text'>{pollutionLevel(pollutionScore)}</div></p>
-            )}
-          </div>
-        </div>
           <div className='postcode-block'>
             <div>
-            Enter a postcode or{' '}
-            <span className='current-location' onClick={getLocation}>
-              use your current location
-            </span>{' '}
-          </div>
-          <input
-            className='postcode-input'
-            type='text'
-            name='name'
-            value={postcode}
-            onChange={handleChange}
-          />
+              Enter a postcode or{' '}
+              <span className='current-location' onClick={getLocation}>
+                use your current location
+              </span>{' '}
+            </div>
+            <input
+              className='postcode-input'
+              type='text'
+              name='name'
+              value={postcode}
+              onChange={handleChange}
+            />
           </div>
         </label>
         <div>I am most concerned about:</div>
-        <div className='slider-scale'><span className='scale-item'>Corona virus</span> <span>Pollution</span></div>
-       <div className='slider-container'>
-        <Slider
-          value={sliderValue}
-          onChange={sliderHandler}
-          onDone={sliderDoneHandler}
-          thumbColor='#66c2ca'
-          shadowColor='#A0DDE3'
-          sliderPathColor='#A0DDE3'
-          className='slider'
-        />
+        <div className='slider-scale'>
+          <span className='scale-item'>Corona virus</span>{' '}
+          <span>Pollution</span>
         </div>
-        <input className='postcode-btn' type='submit' value='Generate score'  />
+        <div className='slider-container'>
+          <Slider
+            value={sliderValue}
+            onChange={sliderHandler}
+            onDone={sliderDoneHandler}
+            thumbColor='#66c2ca'
+            shadowColor='#A0DDE3'
+            sliderPathColor='#A0DDE3'
+            className='slider'
+          />
+        </div>
+        <input className='postcode-btn' type='submit' value='Generate score' />
       </form>
-     
-
-    
-      </div>
-   
+    </div>
   );
 }
 
