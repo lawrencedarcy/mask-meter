@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 import axios from 'axios';
+import Slider from 'react-slider-simple';
+
+
 const database = require('../database.js');
 
-//
+
+
+
 
 function Dashboard(props) {
   const [currentLocation, setCurrentLocation] = useState();
@@ -12,8 +17,7 @@ function Dashboard(props) {
   const [coronaArea, setCoronaArea] = useState();
   const [postcode, setPostcode] = useState();
   const [locationData, setLocationData] = useState();
-
-  console.log(database.database);
+  const [sliderValue, setSliderValue] = useState(50);
 
   const getPostcodeFromLocation = (lat, lon) => {
     axios
@@ -50,7 +54,7 @@ function Dashboard(props) {
 
   const getCoronaData = district => {
     console.log('district is', district);
-    console.log('inside corona function');
+
 
     console.log(database.database.filter(entry => entry.area == district))
 
@@ -110,6 +114,7 @@ function Dashboard(props) {
       });
   };
 
+  
   const handleChange = event => {
     setPostcode(event.target.value);
   };
@@ -122,7 +127,8 @@ function Dashboard(props) {
   const coronaLevel = num => {
     if (num > 7) return 'high';
     if (num > 4) return 'medium';
-    if (num > 0) return 'low';
+    if (num > 2) return 'low';
+    if (num > 0) return 'very low';
   };
 
   const pollutionLevel = num => {
@@ -132,6 +138,35 @@ function Dashboard(props) {
     if (num > 2.5) return 'moderate';
     if (num > 0) return 'low';
   };
+
+  const sliderHandler = (num) => {
+    setSliderValue(num);
+  }
+  const sliderDoneHandler = (percent) => {
+    console.log(`I'm done. here's the value: ${percent}`);
+  };
+
+
+  const calcScore = () => {
+
+    let pol = pollutionScore;
+    let cor = Number(coronaRate);
+
+    if (sliderValue <= 50) {
+      pol = pol * ((sliderValue*2)/100);
+      cor = cor * ((100 - sliderValue)/100)*2;
+    }
+    if (sliderValue > 50) {
+      cor = (cor * ((100-sliderValue)/100))*2;
+      pol = pol * ((sliderValue)/100)*2;
+    }
+
+    console.log('pol score', pol);
+    console.log('cor score', cor);
+
+
+    return ((cor+pol)/2).toFixed(2);
+  }
 
   return (
     <div className='dashboard'>
@@ -151,12 +186,26 @@ function Dashboard(props) {
             onChange={handleChange}
           />
         </label>
+        <div>I am most concerned about:</div>
+        <div>Corona virus ----------- Pollution</div>
+       <div className='slider-container'>
+        <Slider
+          value={sliderValue}
+          onChange={sliderHandler}
+          onDone={sliderDoneHandler}
+          thumbColor='#66c2ca'
+          shadowColor='#A0DDE3'
+          sliderPathColor='#A0DDE3'
+          className='slider'
+        />
+        </div>
         <input className='postcode-btn' type='submit' value='Generate' />
       </form>
+     
 
       <div className='mask-meter'>
         <div className='mask-meter-score'>
-          {coronaRate && pollutionScore && ((Number(coronaRate) + Number(pollutionScore))/2).toFixed(2)}
+          {(coronaRate && pollutionScore) && calcScore()}
         </div>
         <div className='mask-meter-sub'>
           <div className='mask-meter-corona'>
