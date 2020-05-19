@@ -23,7 +23,13 @@
   background-color: #a0e3a6;
   border: none;
   font-size: 1rem;
+  cursor: pointer;
   
+}
+
+.postcode-btn:hover {
+  background-color: #4e8d52;
+  color: white;
 }
 
 .postcode-input {
@@ -38,6 +44,15 @@
 .postcode-input:focus{
   background-color: #A0DDE3;
 
+}
+.current-location {
+  color: #4e8d52;
+  cursor: pointer;
+
+}
+
+.current-location:hover{
+  color: #36773b;
 }
 
 .mask-meter {

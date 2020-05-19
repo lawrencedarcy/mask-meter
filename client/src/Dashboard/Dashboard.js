@@ -1,114 +1,114 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 import axios from 'axios';
+const database = require('../database.js');
+
+//
 
 function Dashboard(props) {
   const [currentLocation, setCurrentLocation] = useState();
   const [pollutionScore, setPollutionScore] = useState();
+  const [coronaRate, setCoronaRate] = useState();
   const [coronaArea, setCoronaArea] = useState();
-  
   const [postcode, setPostcode] = useState();
   const [locationData, setLocationData] = useState();
 
-  useEffect(() => {
-    
-  }, []);
-
+  console.log(database.database);
 
   const getPostcodeFromLocation = (lat, lon) => {
-    axios.get(`http://api.postcodes.io/postcodes?lon=${lon}&lat=${lat}?limit=1`)
-  .then(function (response) {
-    setPostcode(response.data.result[0].postcode || response.data.result.postcode);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-
-  }
-
-  const getLocation = () => {
-    if ('geolocation' in navigator) {
-      console.log('Available');
-      navigator.geolocation.getCurrentPosition(async function(position) {
-        console.log('Latitude is :', position.coords.latitude);
-        console.log('Longitude is :', position.coords.longitude);
-
-        await getPostcodeFromLocation(position.coords.latitude, position.coords.longitude);
-
-        setCurrentLocation([position.coords.latitude, position.coords.longitude]);
-      });
-    } else {
-      alert('Current location is not Available');
-    }
-  }
-
-  const getCoronaData = (district) => {
-    console.log('district is', district);
-    console.log('inside corona function');
     axios
-      .get('https://api.covid19uk.live')
+      .get(`https://api.postcodes.io/postcodes?lon=${lon}&lat=${lat}?limit=1`)
       .then(function(response) {
-        setCoronaArea(JSON.parse(response.data.data[0].area).filter(area => area.location == district )[0]);
-        
-       
+        setPostcode(
+          response.data.result[0].postcode || response.data.result.postcode
+        );
       })
       .catch(function(error) {
         console.log(error);
       });
   };
 
-  
+  const getLocation = () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(async function(position) {
+        console.log('Latitude is :', position.coords.latitude);
+        console.log('Longitude is :', position.coords.longitude);
+
+        await getPostcodeFromLocation(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        setCurrentLocation([
+          position.coords.latitude,
+          position.coords.longitude
+        ]);
+      });
+    } else {
+      alert('Current location is not Available');
+    }
+  };
+
+  const getCoronaData = district => {
+    console.log('district is', district);
+    console.log('inside corona function');
+
+    console.log(database.database.filter(entry => entry.area == district))
+
+    const area = database.database.filter(entry => entry.area == district);
+    setCoronaArea(area[0].area)
+    setCoronaRate((area[0].number/500*10).toFixed(2));
+    // axios
+    //   .get('https://api.covid19uk.live')
+    //   .then(function(response) {
+    //     setCoronaArea(
+    //       JSON.parse(response.data.data[0].area).filter(
+    //         area => area.location == district
+    //       )[0]
+    //     );
+    //   })
+    //   .catch(function(error) {
+    //     console.log(error);
+    //   });
+  };
 
   const getPollutionData = (lat, lon) => {
+    console.log('pollution function called');
+    axios
+      .get(
+        `https://api.climacell.co/v3/weather/nowcast?lat=${lat}&lon=${lon}&unit_system=si&timestep=5&start_time=now&fields=epa_aqi&apikey=RS4vSGHNvWvXcRE2J0MMCfLTsFzoVQBa`
+      )
+      .then(function(response) {
+        setPollutionScore(response.data[0].epa_aqi.value / 10 / 2);
+        console.log('pol score', pollutionScore)
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
 
-          axios({
-            method: 'GET',
-           // url: 'https://uk-air-quality.p.rapidapi.com/latestpollutants',
-            headers: {
-              'content-type': 'application/octet-stream',
-              'x-rapidapi-host': 'uk-air-quality.p.rapidapi.com',
-              'x-rapidapi-key':
-                '1e814ffd8dmsh9958df97ed5b2ffp173a32jsn815ee20b755a',
-              useQueryString: true
-            },
-            params: {
-            //  siteId: `${site}`
-            }
-          })
-            .then(response => {
-              console.log(response);
-              setPollutionScore(
-                
-                Math.round(
-                  ((Number(response.data.pollutants[0].measurement) +
-                    Number(response.data.pollutants[1].measurement)) /
-                    2
-                ) / 3)
-              );
-            })
-            .catch(error => {
-              console.log(error);
-            });  
-    };
+  const getDataFromPostcode = postcode => {
+    axios
+      .get(`https://api.postcodes.io/postcodes/${postcode}`)
+      .then(function(response) {
+        console.log(response.data.result);
+        setLocationData(response.data.result);
 
-
-  const getDataFromPostcode = (postcode) => {
-    axios.get(`https://api.postcodes.io/postcodes/${postcode}`)
-  .then(function (response) {
-    console.log(response.data.result);
-    setLocationData(response.data.result);
-    
-    return response;
-  })
-  .then(function (response){
-   // getPollutionData(response.data.result.latitude, response.data.result.longitude)
-    getCoronaData(response.data.result.admin_county || response.data.result.admin_district);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-
-  }
+        return response;
+      })
+      .then(function(response) {
+        getPollutionData(
+          response.data.result.latitude,
+          response.data.result.longitude
+        );
+        getCoronaData(
+          response.data.result.admin_county ||
+            response.data.result.admin_district
+        );
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
 
   const handleChange = event => {
     setPostcode(event.target.value);
@@ -119,20 +119,30 @@ function Dashboard(props) {
     getDataFromPostcode(postcode);
   };
 
-  const coronaLevel = (num) => {
-
-    if (num > 7) return 'high'
-    if (num > 4) return 'medium' ;
+  const coronaLevel = num => {
+    if (num > 7) return 'high';
+    if (num > 4) return 'medium';
     if (num > 0) return 'low';
+  };
 
-  } 
+  const pollutionLevel = num => {
+    if (num > 9.9) return 'very unhealthy';
+    if (num > 7.5) return 'unhealthy';
+    if (num > 5) return 'unhealthy for some';
+    if (num > 2.5) return 'moderate';
+    if (num > 0) return 'low';
+  };
 
   return (
     <div className='dashboard'>
-    
-      <form onSubmit={handleSubmit} className="postcode-form">
-        <label >
-          <div>Enter a postcode or <span onClick={getLocation}>use current location</span> </div>
+      <form onSubmit={handleSubmit} className='postcode-form'>
+        <label>
+          <div>
+            Enter a postcode or{' '}
+            <span className='current-location' onClick={getLocation}>
+              use your current location
+            </span>{' '}
+          </div>
           <input
             className='postcode-input'
             type='text'
@@ -145,21 +155,32 @@ function Dashboard(props) {
       </form>
 
       <div className='mask-meter'>
-     
-      <div className='mask-meter-score'> 
-      7.3
+        <div className='mask-meter-score'>
+          {coronaRate && pollutionScore && ((Number(coronaRate) + Number(pollutionScore))/2).toFixed(2)}
+        </div>
+        <div className='mask-meter-sub'>
+          <div className='mask-meter-corona'>
+            {' '}
+            {coronaRate && (
+              <p>
+                In {coronaArea} the relative Corona rate is currently{' '}
+                {coronaLevel(coronaRate)}{' '}
+              </p>
+            )}{' '}
+          </div>
+          
+          <div className='mask-meter-pollution'>
+            {' '}
+            {pollutionScore && (
+              <p>
+              The pollution level in {coronaArea} is currently{' '}
+              {pollutionLevel(pollutionScore)}</p>
+            )}
+          </div>
+        </div>
       </div>
-      <div className='mask-meter-sub'>
-      <div className='mask-meter-corona'> {coronaArea &&
-    <p>In {coronaArea.location} the Corona risk level is currently {coronaLevel (coronaArea.number/4500 * 10)} </p>
-} </div>
-      <div className='mask-meter-pollution'>  <p>The pollution level in your area is {pollutionScore}</p></div>
-</div>
-      </div>
-   
-   
     </div>
-  )
+  );
 }
 
 export default Dashboard;
