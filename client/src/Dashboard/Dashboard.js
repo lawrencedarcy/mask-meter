@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 import axios from 'axios';
 import Slider from 'react-slider-simple';
+import Gauge from 'react-radial-gauge';
+
 
 
 const database = require('../database.js');
@@ -18,6 +20,7 @@ function Dashboard(props) {
   const [postcode, setPostcode] = useState();
   const [locationData, setLocationData] = useState();
   const [sliderValue, setSliderValue] = useState(50);
+  const [score, setScore] = useState(0);
 
   const getPostcodeFromLocation = (lat, lon) => {
     axios
@@ -61,18 +64,7 @@ function Dashboard(props) {
     const area = database.database.filter(entry => entry.area == district);
     setCoronaArea(area[0].area)
     setCoronaRate((area[0].number/500*10).toFixed(2));
-    // axios
-    //   .get('https://api.covid19uk.live')
-    //   .then(function(response) {
-    //     setCoronaArea(
-    //       JSON.parse(response.data.data[0].area).filter(
-    //         area => area.location == district
-    //       )[0]
-    //     );
-    //   })
-    //   .catch(function(error) {
-    //     console.log(error);
-    //   });
+
   };
 
   const getPollutionData = (lat, lon) => {
@@ -161,18 +153,44 @@ function Dashboard(props) {
       pol = pol * ((sliderValue)/100)*2;
     }
 
-    console.log('pol score', pol);
-    console.log('cor score', cor);
-
-
-    return ((cor+pol)/2).toFixed(2);
+    return (((cor+pol)/2) * 10).toFixed(0);
   }
 
   return (
     <div className='dashboard'>
       <form onSubmit={handleSubmit} className='postcode-form'>
+      <div className='intro-text'> MaskMeter uses current COVID-19 and air quality data to help you decide whether to wear a mask today.</div>
         <label>
-          <div>
+          <div className='gauge-container'>
+          <div className='mask-meter-corona level-container'>
+            {' '}
+            {coronaRate && (
+              <p>
+                In {coronaArea}, the relative Corona rate is currently{' '}
+                <div className='level-text'>{coronaLevel(coronaRate)}</div>
+              </p>
+            )}{' '}
+          </div>
+        <Gauge 
+        className='gauge'
+        currentValue={calcScore()}
+        dialColor='#a0e3a6'
+        progressColor='#4e8d52'
+        tickColor='#4e8d52'
+        needleColor='#4e8d52'
+        needleBaseColor='#4e8d52'
+        />
+         <div className='mask-meter-pollution level-container'>
+            {' '}
+            {pollutionScore && (
+              <p>
+              The pollution level in {coronaArea} is currently{' '}
+              <div className='level-text'>{pollutionLevel(pollutionScore)}</div></p>
+            )}
+          </div>
+        </div>
+          <div className='postcode-block'>
+            <div>
             Enter a postcode or{' '}
             <span className='current-location' onClick={getLocation}>
               use your current location
@@ -185,9 +203,10 @@ function Dashboard(props) {
             value={postcode}
             onChange={handleChange}
           />
+          </div>
         </label>
         <div>I am most concerned about:</div>
-        <div>Corona virus ----------- Pollution</div>
+        <div className='slider-scale'><span className='scale-item'>Corona virus</span> <span>Pollution</span></div>
        <div className='slider-container'>
         <Slider
           value={sliderValue}
@@ -199,36 +218,13 @@ function Dashboard(props) {
           className='slider'
         />
         </div>
-        <input className='postcode-btn' type='submit' value='Generate' />
+        <input className='postcode-btn' type='submit' value='Generate score'  />
       </form>
      
 
-      <div className='mask-meter'>
-        <div className='mask-meter-score'>
-          {(coronaRate && pollutionScore) && calcScore()}
-        </div>
-        <div className='mask-meter-sub'>
-          <div className='mask-meter-corona'>
-            {' '}
-            {coronaRate && (
-              <p>
-                In {coronaArea} the relative Corona rate is currently{' '}
-                {coronaLevel(coronaRate)}{' '}
-              </p>
-            )}{' '}
-          </div>
-          
-          <div className='mask-meter-pollution'>
-            {' '}
-            {pollutionScore && (
-              <p>
-              The pollution level in {coronaArea} is currently{' '}
-              {pollutionLevel(pollutionScore)}</p>
-            )}
-          </div>
-        </div>
+    
       </div>
-    </div>
+   
   );
 }
 
