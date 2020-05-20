@@ -79,10 +79,13 @@ function Dashboard(props) {
   };
 
   const getDataFromPostcode = postcode => {
+
+  
     axios
       .get(`https://api.postcodes.io/postcodes/${postcode}`)
       .then(function(response) {
         console.log(response.data.result);
+
         setLocationData(response.data.result);
 
         return response;
@@ -92,10 +95,15 @@ function Dashboard(props) {
           response.data.result.latitude,
           response.data.result.longitude
         );
+        if (response.data.result.country === 'Scotland'){setCoronaRate(((273 / 500) * 10).toFixed(2)); setCoronaArea('Scotland')}
+        if (response.data.result.country === 'Wales'){ setCoronaRate(((404 / 500) * 10).toFixed(2)); setCoronaArea('Wales')}
+        if (response.data.result.country === 'Northern Ireland'){setCoronaRate(((283 / 500) * 10).toFixed(2)); setCoronaArea('Northern Ireland')}
+        else{
         getCoronaData(
           response.data.result.admin_county ||
             response.data.result.admin_district
         );
+        }
       })
       .catch(function(error) {
         console.log(error);
@@ -223,7 +231,7 @@ function Dashboard(props) {
           )}
           <div className='postcode-block'>
             <div>
-              Enter a postcode or{' '}
+              Enter a UK postcode or{' '}
               <span className='current-location' onClick={getLocation}>
                 use your current location
               </span>{' '}
