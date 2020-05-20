@@ -163,8 +163,7 @@ function Dashboard(props) {
       <form onSubmit={handleSubmit} className='postcode-form'>
         <div className='intro-text'>
           {' '}
-          MaskMeter uses current COVID-19 and air quality data from your local area to help you
-          decide whether to wear a face mask.
+          MaskMeter uses current COVID-19 and air quality data from your local area to help you to decide whether to wear a face mask.
         </div>
        
         <label>
