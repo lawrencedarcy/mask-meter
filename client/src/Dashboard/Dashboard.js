@@ -17,6 +17,7 @@ function Dashboard(props) {
   const [score, setScore] = useState(0);
 
   const getPostcodeFromLocation = (lat, lon) => {
+    
     axios
       .get(`https://api.postcodes.io/postcodes?lon=${lon}&lat=${lat}?limit=1`)
       .then(function(response) {
@@ -30,6 +31,7 @@ function Dashboard(props) {
   };
 
   const getLocation = () => {
+    setPostcode('Searching...');
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(async function(position) {
         console.log('Latitude is :', position.coords.latitude);
@@ -66,8 +68,10 @@ function Dashboard(props) {
         `https://api.climacell.co/v3/weather/nowcast?lat=${lat}&lon=${lon}&unit_system=si&timestep=5&start_time=now&fields=epa_aqi&apikey=RS4vSGHNvWvXcRE2J0MMCfLTsFzoVQBa`
       )
       .then(function(response) {
+        console.log('pollution apa score', response.data[0].epa_aqi.value )
         setPollutionScore(response.data[0].epa_aqi.value / 10 / 2);
-        console.log('pol score', pollutionScore);
+     
+       
       })
       .catch(function(error) {
         console.log(error);
@@ -115,11 +119,11 @@ function Dashboard(props) {
   };
 
   const pollutionLevel = num => {
-    if (num > 9.9) return 'very unhealthy';
-    if (num > 7.5) return 'unhealthy';
-    if (num > 5) return 'unhealthy for some';
-    if (num > 2.5) return 'moderate';
-    if (num > 0) return 'low';
+    if (num >= 9.9) return 'very unhealthy';
+    if (num >= 7.5) return 'unhealthy';
+    if (num >= 5) return 'unhealthy for some';
+    if (num >= 2.5) return 'moderate';
+    if (num > 0) return 'good';
   };
 
   const sliderHandler = num => {
@@ -151,12 +155,19 @@ function Dashboard(props) {
       <form onSubmit={handleSubmit} className='postcode-form'>
         <div className='intro-text'>
           {' '}
-          MaskMeter uses current COVID-19 and air quality data to help you
-          decide whether to wear a mask.
+          MaskMeter uses current COVID-19 and air quality data from your local area to help you
+          decide whether to wear a face mask.
         </div>
+       
         <label>
+        
+          {pollutionScore != undefined  &&(
+          <div className='gauge-wrapper'>
+            <div className='gauge-header'>Your MaskMeter score</div>
           <div className='gauge-container'>
             <div className='mask-meter-corona level-container'>
+            
+            
               {' '}
               {coronaRate && (
                 <div>
@@ -194,15 +205,22 @@ function Dashboard(props) {
                 ></img>
                 <div className='p'>
                   
-                  The pollution level in your area is currently{' '}
+                  The air quality in your area is currently{' '}
                   <div className='level-text'>
                     {pollutionLevel(pollutionScore)}
                   </div>
                 </div>
+                
                 </div>
               )}
             </div>
+           
           </div>
+          <div className='disclaimer'><b>Sources:</b> COVID-19 rate based on Public Health England recorded cases per 100,000 population. Air quality data uses the <a href='https://www3.epa.gov/airnow/aqi_brochure_02_14.pdf'>EPA AQI.</a> 
+         <b> MaskMeter is only intended as an indicator </b>and you should follow government and <a href='https://www.who.int/publications-detail/advice-on-the-use-of-masks-in-the-community-during-home-care-and-in-healthcare-settings-in-the-context-of-the-novel-coronavirus-(2019-ncov)-outbreak'>WHO guidance</a> on face masks.
+          </div>
+          </div>
+          )}
           <div className='postcode-block'>
             <div>
               Enter a postcode or{' '}

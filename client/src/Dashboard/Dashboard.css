@@ -15,7 +15,7 @@ background-color:   rgba(227, 249, 253, 0.562);
 .intro-text {
   width: 80%;
   margin: auto;
-  padding: 0rem;
+  padding: 0rem 0 .5rem; 
  
   font-weight: 500;
   line-height: 1.4rem;
@@ -39,7 +39,7 @@ background-color:   rgba(227, 249, 253, 0.562);
   outline: none;
   text-transform: uppercase;
   height: calc(2rem + 2vw);
-  margin: 2rem auto .5rem;
+  margin: 2.7rem auto .5rem;
   width: calc(7rem + 10vw);
   background-color: #a0e3a6;
   border: none;
@@ -48,16 +48,26 @@ background-color:   rgba(227, 249, 253, 0.562);
   
 }
 
-.gauge {
-  font-family: monospace !important;
 
+
+.gauge-wrapper {
+  border: .05rem solid #A0DDE3;
+  margin: 1rem 0;
+  
+  padding: 1.5rem;
+}
+
+.gauge-header {
+  padding: 0rem 0 1rem 0;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.4rem;
 }
 
 .gauge-container {
   display: flex;
-  margin: 1rem 0;
-  border: .05rem solid #A0DDE3;
-  padding: 1.5rem;
+  align-items: center;
+  justify-content: center;
+ 
 }
 
 .postcode-btn:hover {
@@ -68,6 +78,8 @@ background-color:   rgba(227, 249, 253, 0.562);
 .postcode-input {
   height: 1.7rem;
   margin: .5rem;
+  width: 50%;
+  max-width: 200px;;
   outline: none;
   font-size: 1.3rem;
   text-transform: uppercase;
@@ -116,6 +128,34 @@ background-color:   rgba(227, 249, 253, 0.562);
   padding: 0 1rem;
 }
 
+.disclaimer {
+  margin-top: 1.7rem;
+  font-size: .7rem;
+}
+
+
+@media only screen and (max-width: 650px) {
+  .mask-meter-corona, .mask-meter-pollution  {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+  }
+  .gauge-container {
+    flex-direction: column;
+    margin: 0rem 0;
+    padding: .5rem;
+  }
+
+  .disclaimer {
+    margin-top: 1rem;
+    
+  }
+
+}
+
+
+
 
 .slider-scale {
   font-weight: bold;
@@ -134,9 +174,9 @@ background-color:   rgba(227, 249, 253, 0.562);
 }
 
 .level-text {
-  font-size: calc(1.5rem);
+  font-size: calc(1.2rem);
   text-transform: uppercase;
-  padding: 1rem;
+  padding: .4rem;
   text-align: center;
 }
 
@@ -145,6 +185,8 @@ background-color:   rgba(227, 249, 253, 0.562);
   margin-left: 0 .5rem;
 }
 
+
+
 .p {
   font-size: .8rem;
 }
@@ -152,4 +194,16 @@ background-color:   rgba(227, 249, 253, 0.562);
 .mask {
   width: 35px;
   margin: 10px;
+}
+
+.red {
+  color: red;
+}
+
+.orange {
+  color: orange;
+}
+
+.green {
+  color: green;
 }
