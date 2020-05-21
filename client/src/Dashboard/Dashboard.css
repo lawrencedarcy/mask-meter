@@ -7,9 +7,13 @@
   
 } 
 body {
-background-color:   rgba(227, 249, 253, 0.562);
+background-color:   rgba(227, 249, 253, 0.212);
 }
 
+a {
+  text-decoration: none;
+  color: #4e8d52;
+}
 
 
 .intro-text {
@@ -76,7 +80,7 @@ background-color:   rgba(227, 249, 253, 0.562);
 }
 
 .postcode-input {
-  height: 1.7rem;
+  height: 1.6rem;
   margin: .5rem;
   width: 50%;
   max-width: 200px;;
@@ -133,8 +137,21 @@ background-color:   rgba(227, 249, 253, 0.562);
   font-size: .7rem;
 }
 
+.error {
+  font-size: .7rem;
+  color: rgb(233, 72, 72);
+}
+
+.hide {
+  display: none;
+}
+
 
 @media only screen and (max-width: 650px) {
+
+  .dashboard {
+    width: 100%;
+  }
   .mask-meter-corona, .mask-meter-pollution  {
     width: 100%;
     padding: 0;
@@ -150,6 +167,10 @@ background-color:   rgba(227, 249, 253, 0.562);
   .disclaimer {
     margin-top: 1rem;
     
+  }
+
+  .postcode-btn{
+    font-size: .8rem;
   }
 
 }

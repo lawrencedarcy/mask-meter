@@ -9,9 +9,11 @@
     "axios": "^0.19.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-loader-spinner": "^3.1.14",
     "react-radial-gauge": "^0.1.1",
     "react-scripts": "3.4.1",
-    "react-slider-simple": "^4.0.5"
+    "react-slider-simple": "^4.0.5",
+    "react-spinners": "^0.8.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -33,5 +35,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-social-icons": "^4.1.0"
   }
 }
