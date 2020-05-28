@@ -217,6 +217,20 @@ a {
   margin: 10px;
 }
 
+.headline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tweet {
+  padding-bottom: .5rem;
+  padding-right: .5rem;
+
+}
+.space {
+  width: 3.7rem;
+}
 .red {
   color: red;
 }

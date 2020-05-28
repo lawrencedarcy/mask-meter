@@ -18,10 +18,17 @@ function Dashboard(props) {
   const [sliderValue, setSliderValue] = useState(50);
 const [postcodeError, setPostcodeError] = useState(false);
 const [loadingLocation, setLoadingLocation] = useState(false);
+
+
   let gaugeBackground = '#a0e3a6';
   let gaugeProgress = '#4e8d52';
-
   
+  let total =0;
+  let i = 0;
+  database.database.forEach((x) => {total += x.number;
+    i++;
+  });
+
 
   const getPostcodeFromLocation = (lat, lon) => {
     axios
@@ -58,7 +65,7 @@ const [loadingLocation, setLoadingLocation] = useState(false);
   const getCoronaData = district => {
     const area = database.database.filter(entry => entry.area === district);
     setCoronaArea(area[0].area);
-    setCoronaRate(((area[0].number / 500) * 10).toFixed(2));
+    setCoronaRate(((area[0].number / 596) * 10).toFixed(2));
   };
 
   const getPollutionData = (lat, lon) => {
@@ -92,7 +99,7 @@ const [loadingLocation, setLoadingLocation] = useState(false);
           setCoronaArea('Scotland');
         }
         if (response.data.result.country === 'Wales') {
-          setCoronaRate(((404 / 500) * 10).toFixed(2));
+          setCoronaRate(((404 / 500) * 10));
           setCoronaArea('Wales');
         }
         if (response.data.result.country === 'Northern Ireland') {
@@ -122,10 +129,12 @@ const [loadingLocation, setLoadingLocation] = useState(false);
   };
 
   const coronaLevel = num => {
-    if (num > 7) return 'high';
-    if (num > 4) return 'medium';
-    if (num > 2) return 'low';
-    if (num > 0) return 'very low';
+    
+    if (num >= 7) return 'well above average';
+    if (num > 5) return 'above average';
+    if (num > 3) return 'about average';
+    if (num > 1) return 'below average';
+    if (num > 0) return 'well below average';
   };
 
   const pollutionLevel = num => {
@@ -164,7 +173,7 @@ const [loadingLocation, setLoadingLocation] = useState(false);
       gaugeBackground = '#FDB0B0';
       gaugeProgress = '#FF3F3F ';
     }
-
+    
     return (((cor + pol) / 2) * 10).toFixed(0);
   };
 
@@ -173,6 +182,7 @@ const [loadingLocation, setLoadingLocation] = useState(false);
       <form onSubmit={handleSubmit} className='postcode-form'>
         <div className='intro-text'>
           {' '}
+         
           MaskMeter uses current COVID-19 and air quality data from your local
           area to help you to decide whether to wear a face mask. Created by{' '}
           <a href='https://lawrencewakefield.netlify.app/' target='_blank'>
@@ -184,7 +194,19 @@ const [loadingLocation, setLoadingLocation] = useState(false);
         <label>
           {pollutionScore != undefined && (
             <div className='gauge-wrapper'>
-              <div className='gauge-header'>Your MaskMeter score</div>
+         
+          
+        
+            <div className='gauge-header'>Your MaskMeter score</div>
+            {/*  <span className='tweet'><TwitterButton
+             
+             target="http://maskmeter.uk"
+             text={`MaskMeter combines current COVID-19 and air quality data to help you decide whether to wear a face mask today.`}
+             type="Share"
+           /></span> */}
+
+
+            
               <div className='gauge-container'>
                 <div className='mask-meter-corona level-container'>
                   {' '}
