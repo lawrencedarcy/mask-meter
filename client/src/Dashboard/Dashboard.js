@@ -288,7 +288,7 @@ const [loadingLocation, setLoadingLocation] = useState(false);
         </label>
         <div>I am most concerned about:</div>
         <div className='slider-scale'>
-          <span className='scale-item'>Corona virus</span>{' '}
+          <span className='scale-item'>Coronavirus</span>{' '}
           <span>Pollution</span>
         </div>
         <div className='slider-container'>
